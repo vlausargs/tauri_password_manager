@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "material-icons/iconfont/material-icons.css";
+.bg-primary-1 {
+  background-color: #333539;
+}
+.bg-primary-2 {
+  background-color: #222429;
+}
+.bg-primary-3 {
+  background-color: #141419;
+}
+.bg-primary-4 {
+  background-color: #0f0f13;
+}
+
+.font-color {
+  color: #7d7d81;
+}
+.font-color-active {
+  color: #f6f6f6;
+}

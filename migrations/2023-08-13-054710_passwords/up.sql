@@ -1,0 +1,9 @@
+-- Your SQL goes here
+CREATE TABLE passwords (
+    id VARCHAR(50) PRIMARY KEY NOT NULL,
+    icon_url VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

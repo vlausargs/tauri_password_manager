@@ -1,0 +1,60 @@
+<div class="p-4 w-full h-full">
+  <form class="mb-4" (submit)="createUser($event, user_name.value)">
+    <input
+      class="mr-2 border border-gray-400 bg-primary-1 box-border p-1 text-white"
+      #user_name
+      id="greet-input"
+      placeholder="Enter a name..."
+    />
+    <button
+      class="border border-gray-400 bg-lime-700 p-1 text-zinc-200 font-semibold"
+      type="submit"
+    >
+      create
+    </button>
+  </form>
+
+  <div class="w-full max-h-screen">
+    <div class="w-full max-w-[calc(100vw-212px)] h-[600px] overflow-auto">
+      <table
+        class="table-fixed overflow-scroll text-sm text-left text-slate-200 break-words"
+      >
+        <thead class="uppercase bg-gray-400 border border-gray-700">
+          <tr>
+            <th width="120" class="p-2">Action</th>
+
+            <th
+              *ngFor="let dat of tableModel"
+              class="border border-gray-700 p-2"
+              [width]="dat.width"
+            >
+              {{ dat.label }}
+            </th>
+          </tr>
+        </thead>
+        <tbody class="border border-gray-700">
+          <tr
+            class="border-b border-gray-700 bg-gray-500"
+            *ngFor="let obj of users"
+          >
+            <td class="text-right" width="120">
+              <button
+                class="material-icons text-red-900"
+                (click)="deleteUser(obj.id)"
+              >
+                delete
+              </button>
+            </td>
+            <td
+              class="border border-gray-700 p-2"
+              *ngFor="let dat of tableModel"
+              [width]="dat.width"
+            >
+              {{ obj[dat.prop] }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
