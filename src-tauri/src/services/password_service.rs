@@ -47,5 +47,4 @@ pub fn delete_password(id: String) {
     diesel::delete(dsl::passwords.filter(dsl::id.eq(id)))
         .execute(connection)
         .expect("Error deleting password");
-
 }
