@@ -4,7 +4,7 @@ use diesel::{Insertable, Queryable};
 use serde::Serialize;
 
 #[derive(Queryable, Serialize, Insertable)]
-#[diesel(table_name = users)]
+#[diesel(table_name = passwords)]
 pub struct Password {
     pub id: String,
     pub icon_url:  Option<String>,

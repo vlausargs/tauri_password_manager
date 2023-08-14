@@ -1,9 +1,8 @@
 use crate::{db::establish_db_connection, models::password::Password, schema::passwords::dsl};
 use diesel::prelude::*;
 
-#[macro_use] extern crate magic_crypt;
 
-use magic_crypt::MagicCrypt;
+use magic_crypt::{new_magic_crypt, MagicCryptTrait};
 
 
 pub fn list_passwords() -> Vec<Password> {
@@ -14,13 +13,19 @@ pub fn list_passwords() -> Vec<Password> {
         .expect("Error loading passwords")
 }
 
-pub fn get_password(id: String) -> Option<Password> {
+pub fn get_password_decrypted(id: String) -> Option<Password> {
     let connection = &mut establish_db_connection();
 
-    dsl::passwords
+    let res = dsl::passwords
         .filter(dsl::id.eq(id))
         .first::<Password>(connection)
-        .ok()
+        .ok(); 
+
+    let mc = new_magic_crypt!("s3CrEt@!_!@___@!_!@", 256);
+    res.map(|mut p| {
+        p.password = mc.decrypt_base64_to_string(p.password).unwrap();
+        p
+    })
 }
 
 pub fn store_new_password(password: &Password) {
@@ -41,6 +46,8 @@ pub fn update_password(id: String, name: String, url: String, password: String ,
         .execute(connection)
         .expect("Error updating password");
 }
+
+
 
 pub fn delete_password(id: String) {
     let connection = &mut establish_db_connection();

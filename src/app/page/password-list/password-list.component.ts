@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-
+import { invoke } from "@tauri-apps/api/tauri";
+import { UtilFunctionService } from "src/app/utils/util-function.service";
 @Component({
   selector: "app-password-list",
   templateUrl: "./password-list.component.html",
@@ -14,7 +15,7 @@ export class PasswordListComponent implements OnInit {
     url: string,
     password: string,
   ): void {
-    invoke<void>("create_user", {
+    invoke<void>("create_password", {
       newPassword: {
         name: name,
         url: url,
