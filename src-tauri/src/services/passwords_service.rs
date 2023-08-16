@@ -1,10 +1,6 @@
 use crate::{db::establish_db_connection, models::password::Password, schema::passwords::dsl};
 use diesel::prelude::*;
-
-
 use magic_crypt::{new_magic_crypt, MagicCryptTrait};
-
-
 pub fn list_passwords() -> Vec<Password> {
     let connection = &mut establish_db_connection();
 
@@ -12,7 +8,6 @@ pub fn list_passwords() -> Vec<Password> {
         .load::<Password>(connection)
         .expect("Error loading passwords")
 }
-
 pub fn get_password_decrypted(id: String) -> Option<Password> {
     let connection = &mut establish_db_connection();
 
@@ -27,7 +22,6 @@ pub fn get_password_decrypted(id: String) -> Option<Password> {
         p
     })
 }
-
 pub fn store_new_password(password: &Password) {
     let connection = &mut establish_db_connection();
 
@@ -36,7 +30,6 @@ pub fn store_new_password(password: &Password) {
         .execute(connection)
         .expect("Error saving new password");
 }
-
 pub fn update_password(id: String, name: String, url: String, password: String , icon_url: String) {
     let connection = &mut establish_db_connection();
     let mc = new_magic_crypt!("s3CrEt@!_!@___@!_!@", 256);
@@ -46,9 +39,6 @@ pub fn update_password(id: String, name: String, url: String, password: String ,
         .execute(connection)
         .expect("Error updating password");
 }
-
-
-
 pub fn delete_password(id: String) {
     let connection = &mut establish_db_connection();
     diesel::delete(dsl::passwords.filter(dsl::id.eq(id)))
