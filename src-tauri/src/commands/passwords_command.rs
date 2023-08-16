@@ -4,7 +4,7 @@ use crate::{models::password::Password, services::passwords_service};
 
 #[derive(serde::Deserialize)]
 pub struct PasswordRequest {
-    name: String, url: String, password: String , icon_url: String
+    name: String, url: String, password: String , icon_url: Option<String>
 }
 
 #[tauri::command]
@@ -14,7 +14,7 @@ pub fn create_password(new_password: PasswordRequest) {
         name: new_password.name,
         url: new_password.url,
         password: new_password.password,
-        icon_url: Some(new_password.icon_url),
+        icon_url: new_password.icon_url,
         created_at: chrono::Utc::now().naive_utc(),
     };
 
@@ -33,7 +33,7 @@ pub fn get_password_decrypted(id: String) -> Option<Password> {
 
 #[tauri::command]
 pub fn update_password(id: String, password: PasswordRequest) {
-    passwords_service::update_password(id, password.name , password.url , password.password , password.icon_url);
+    passwords_service::update_password(id, password.name , password.url , password.password , (password.icon_url.unwrap()));
 }
 #[tauri::command]
 pub fn delete_password(id: String) {

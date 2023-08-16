@@ -8,10 +8,13 @@ import { UtilFunctionService } from "src/app/utils/util-function.service";
 })
 export class PasswordListComponent implements OnInit {
   passwords: any = [];
+  constructor(private _utilFunctionService: UtilFunctionService) {}
 
   tableModel = [
     { prop: "id", label: "ID", width: "500", sortable: true },
     { prop: "name", label: "Name", width: "1400", sortable: true },
+    { prop: "url", label: "Url", width: "1000", sortable: true },
+    { prop: "password", label: "password", width: "1000", sortable: true },
     { prop: "created_at", label: "Created At", width: "100", sortable: true },
   ];
 
@@ -24,14 +27,16 @@ export class PasswordListComponent implements OnInit {
     url: string,
     password: string,
   ): void {
+    event.preventDefault();
     invoke<void>("create_password", {
       newPassword: {
         name: name,
         url: url,
         password: password,
       },
-    }).then(() => {
-      window.location.reload();
+    }).then((e) => {
+      console.log(e);
+      // window.location.reload();
     });
   }
 
@@ -42,7 +47,7 @@ export class PasswordListComponent implements OnInit {
       this.passwords = array.map((password: any) => ({
         ...password,
         created_at: this._utilFunctionService.convertApiDate(
-          user.created_at,
+          password.created_at,
           "DD/MM/YYYY",
         ),
       }));

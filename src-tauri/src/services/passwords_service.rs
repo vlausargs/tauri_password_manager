@@ -25,8 +25,19 @@ pub fn get_password_decrypted(id: String) -> Option<Password> {
 pub fn store_new_password(password: &Password) {
     let connection = &mut establish_db_connection();
 
+    let mc = new_magic_crypt!("s3CrEt@!_!@___@!_!@", 256);
+
+    let password_new = Password {
+        id: password.id.clone(),
+        name: password.name.clone(),
+        password: mc.encrypt_str_to_base64(password.password.clone()),
+        url: password.url.clone(),
+        icon_url: password.icon_url.clone(),
+        created_at: password.created_at.clone(),
+    };
+
     diesel::insert_into(dsl::passwords)
-        .values(password)
+        .values(password_new)
         .execute(connection)
         .expect("Error saving new password");
 }
