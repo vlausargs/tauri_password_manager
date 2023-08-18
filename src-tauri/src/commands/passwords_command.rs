@@ -27,8 +27,21 @@ pub fn list_passwords() -> Vec<Password> {
 }
 
 #[tauri::command]
-pub fn get_password_decrypted(id: String) -> Option<Password> {
-    passwords_service::get_password_decrypted(id)
+pub fn get_password_decrypted(id: String,otp: String) -> Option<Password> {
+    passwords_service::get_password_decrypted(id,otp)
+}
+#[tauri::command]
+pub fn generate_totp()  {
+    passwords_service::generate_totp();
+}
+#[tauri::command]
+pub fn generate_random_password() -> String {
+    passwords_service::generate_random_password()
+}
+
+#[tauri::command]
+pub fn validate_totp(otp: String,)  {
+    passwords_service::validate_totp(otp);
 }
 
 #[tauri::command]

@@ -1,6 +1,63 @@
 use crate::{db::establish_db_connection, models::password::Password, schema::passwords::dsl};
 use diesel::prelude::*;
 use magic_crypt::{new_magic_crypt, MagicCryptTrait};
+use totp_rs::{Secret, TOTP, Algorithm};
+
+use rand::{thread_rng, Rng};
+use rand::distributions::Alphanumeric;
+
+pub fn totp_init() ->TOTP {
+    let env_secret = std::env::var("TOTP_SECRET_KEY").expect("TOTP_SECRET_KEY must be set.");
+    let secret = Secret::Raw(env_secret.as_bytes().to_vec());
+    let totp = TOTP::new(Algorithm::SHA1, 6, 0, 30, secret.to_bytes().unwrap(), None, "test2".to_string()).unwrap();
+    totp
+}
+
+pub fn generate_totp(){
+    let env_secret = std::env::var("TOTP_SECRET_KEY").expect("TOTP_SECRET_KEY must be set.");
+
+    let secret = Secret::Raw(env_secret.as_bytes().to_vec());
+    let totp = TOTP::new(Algorithm::SHA1, 6, 0, 30, secret.to_bytes().unwrap(), None, "test2".to_string()).unwrap();
+    let code = totp.get_qr().unwrap();
+
+    println!(
+        "secret raw: {} ; secret base32 {} ; code: {},qr: {}",
+        secret,
+        secret.to_encoded(),
+        totp.generate_current().unwrap(),
+        code
+    )
+
+}
+
+pub fn string_password_encrypt(password:String) ->String{
+    let env_secret: String = std::env::var("DB_SECRET").expect("DB_SECRET must be set.");
+
+    let mc = new_magic_crypt!(env_secret, 256);
+    mc.encrypt_str_to_base64(password)
+}
+pub fn string_password_decrypt(password:String) ->String{
+    let env_secret = std::env::var("DB_SECRET").expect("DB_SECRET must be set.");
+
+    let mc = new_magic_crypt!(env_secret, 256);
+    mc.decrypt_base64_to_string(password).unwrap()
+
+}
+pub fn generate_random_password() -> String {
+    let password: String = thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(20)
+        .map(char::from)
+        .collect();
+    password
+}
+pub fn validate_totp(otp:String)-> bool{
+    let totp = totp_init();
+    let valid = totp.check_current(&otp).unwrap();
+    println!("valid: {}", valid);
+    valid
+}
+
 pub fn list_passwords() -> Vec<Password> {
     let connection = &mut establish_db_connection();
 
@@ -8,7 +65,7 @@ pub fn list_passwords() -> Vec<Password> {
         .load::<Password>(connection)
         .expect("Error loading passwords")
 }
-pub fn get_password_decrypted(id: String) -> Option<Password> {
+pub fn get_password_decrypted(id: String,otp:String) -> Option<Password> {
     let connection = &mut establish_db_connection();
 
     let res = dsl::passwords
@@ -16,21 +73,25 @@ pub fn get_password_decrypted(id: String) -> Option<Password> {
         .first::<Password>(connection)
         .ok(); 
 
-    let mc = new_magic_crypt!("s3CrEt@!_!@___@!_!@", 256);
-    res.map(|mut p| {
-        p.password = mc.decrypt_base64_to_string(p.password).unwrap();
-        p
-    })
+    if(validate_totp(otp)){
+        res.map(|mut p| {
+            p.password = string_password_decrypt(p.password);
+            p
+        })
+    }else{
+        None
+    }
+
 }
+
 pub fn store_new_password(password: &Password) {
     let connection = &mut establish_db_connection();
 
-    let mc = new_magic_crypt!("s3CrEt@!_!@___@!_!@", 256);
 
     let password_new = Password {
         id: password.id.clone(),
         name: password.name.clone(),
-        password: mc.encrypt_str_to_base64(password.password.clone()),
+        password: string_password_encrypt(password.password.clone()),
         url: password.url.clone(),
         icon_url: password.icon_url.clone(),
         created_at: password.created_at.clone(),

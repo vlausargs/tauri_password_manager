@@ -9,8 +9,11 @@ mod services;
 
 use commands::users_command::*;
 use commands::passwords_command::*;
+use dotenv::dotenv;
+
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
     tauri::async_runtime::set(tokio::runtime::Handle::current());
     // tauri
     tauri::Builder::default()
@@ -26,8 +29,12 @@ async fn main() {
         get_password_decrypted,
         update_password,
         delete_password,
+        generate_random_password,
+        generate_totp,
+        validate_totp,
         ])
         .setup(|_app| {
+
             tokio::spawn(async move {
                 db::init();
             });

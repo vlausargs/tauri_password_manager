@@ -7,15 +7,18 @@ import { LoginComponent } from "./page/login/login.component";
 import { CommonModule } from "@angular/common";
 import { PasswordListComponent } from "./page/password-list/password-list.component";
 import { BrowserModule } from "@angular/platform-browser";
+import { OauthComponent } from "./page/oauth/oauth.component";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 const routes: Routes = [
-  { path: "", redirectTo: "/home", pathMatch: "full" },
+  { path: "", redirectTo: "/passwordList", pathMatch: "full" },
   {
     path: "",
     component: AppLayoutComponent,
     children: [
       { path: "passwordList", component: PasswordListComponent },
       { path: "home", component: HomeComponent },
+      { path: "oauth", component: OauthComponent },
     ],
   },
   {
@@ -26,8 +29,18 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  declarations: [HomeComponent, LoginComponent, PasswordListComponent],
-  imports: [CommonModule, RouterModule.forRoot(routes)],
+  declarations: [
+    HomeComponent,
+    LoginComponent,
+    PasswordListComponent,
+    OauthComponent,
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot(routes),
+  ],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}
