@@ -51,6 +51,7 @@ fn db_file_exists() -> bool {
 
 fn get_db_path() -> String {
     // let home_dir = std::env::current_dir().unwrap();
+    let path = std::env::var("DB_PATH").expect("DB_PATH must be set.");
     let home_dir = dirs::home_dir().unwrap();
-    home_dir.to_str().unwrap().to_string() + "/valosapp/.config/database.sqlite"
+    home_dir.to_str().unwrap().to_string() + &path
 }
