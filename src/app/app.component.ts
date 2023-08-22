@@ -1,4 +1,5 @@
 import { Component, OnInit } from "@angular/core";
+import { listen } from "@tauri-apps/api/event";
 import { invoke } from "@tauri-apps/api/tauri";
 
 @Component({
@@ -9,7 +10,11 @@ import { invoke } from "@tauri-apps/api/tauri";
 export class AppComponent implements OnInit {
   constructor() {}
   ngOnInit(): void {
-    // console.log("run dbinit");
-    // invoke<string>("init_connection");
+    this.listener();
+  }
+  listener() {
+    listen("reload", () => {
+      window.location.reload();
+    });
   }
 }

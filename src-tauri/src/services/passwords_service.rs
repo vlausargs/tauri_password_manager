@@ -1,3 +1,4 @@
+use crate::models::password_decrypted::PasswordDecrypted;
 use crate::{db::establish_db_connection, models::password::Password, schema::passwords::dsl};
 use diesel::prelude::*;
 use magic_crypt::{new_magic_crypt, MagicCryptTrait};
@@ -65,16 +66,20 @@ pub fn list_passwords() -> Vec<Password> {
         .load::<Password>(connection)
         .expect("Error loading passwords")
 }
-pub fn get_password_decrypted(id: String,otp:String) -> Option<Password> {
+pub fn get_password_decrypted(id: String,otp:String) -> Option<PasswordDecrypted> {
     let connection = &mut establish_db_connection();
 
-    let res = dsl::passwords
-        .filter(dsl::id.eq(id))
-        .first::<Password>(connection)
-        .ok(); 
-
-    if(validate_totp(otp)){
-        res.map(|mut p| {
+   let res =  diesel::sql_query("SELECT id, password from passwords where id = $1 LIMIT 1")
+    .bind::<diesel::sql_types::Text,_>(id)
+    .load::<PasswordDecrypted>(connection)
+    .ok();
+    // let res = dsl::passwords
+    //     .filter(dsl::id.eq(id))
+    //     .first::<PasswordDecrypted>(connection)
+    //     .ok(); 
+    if validate_totp(otp) {
+        let res2  = res.unwrap().first().cloned();
+        res2.map(|mut p| {
             p.password = string_password_decrypt(p.password);
             p
         })
@@ -91,6 +96,7 @@ pub fn store_new_password(password: &Password) {
     let password_new = Password {
         id: password.id.clone(),
         name: password.name.clone(),
+        username: password.username.clone(),
         password: string_password_encrypt(password.password.clone()),
         url: password.url.clone(),
         icon_url: password.icon_url.clone(),
@@ -102,12 +108,12 @@ pub fn store_new_password(password: &Password) {
         .execute(connection)
         .expect("Error saving new password");
 }
-pub fn update_password(id: String, name: String, url: String, password: String , icon_url: String) {
+pub fn update_password(id: String, name: String, url: String, username: String, password: String , icon_url: String) {
     let connection = &mut establish_db_connection();
     let mc = new_magic_crypt!("s3CrEt@!_!@___@!_!@", 256);
     let enc_password = mc.encrypt_str_to_base64(password);
     diesel::update(dsl::passwords.filter(dsl::id.eq(id)))
-        .set((dsl::name.eq(name), dsl::password.eq(enc_password), dsl::url.eq(url), dsl::icon_url.eq(icon_url)))
+        .set((dsl::name.eq(name),dsl::username.eq(username), dsl::password.eq(enc_password), dsl::url.eq(url), dsl::icon_url.eq(icon_url)))
         .execute(connection)
         .expect("Error updating password");
 }

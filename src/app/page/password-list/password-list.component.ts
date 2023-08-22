@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { FormBuilder, Validators } from "@angular/forms";
 import { invoke } from "@tauri-apps/api/tauri";
+import { WebviewWindow, appWindow, getCurrent } from "@tauri-apps/api/window";
 import { UtilFunctionService } from "src/app/utils/util-function.service";
+import { listen } from "@tauri-apps/api/event";
 import Swal from "sweetalert2";
 @Component({
   selector: "app-password-list",
@@ -14,8 +16,10 @@ export class PasswordListComponent implements OnInit {
     private formBuilder: FormBuilder,
     private _utilFunctionService: UtilFunctionService,
   ) {}
+
   requestForm = this.formBuilder.group({
     name: ["", Validators.required],
+    username: ["", Validators.required],
     url: ["", Validators.required],
     password: ["", Validators.required],
   });
@@ -23,30 +27,47 @@ export class PasswordListComponent implements OnInit {
     // { prop: "id", label: "ID", width: "500", sortable: true },
     { prop: "name", label: "Name", width: "1400", sortable: true },
     { prop: "url", label: "Url", width: "1000", sortable: true },
-    { prop: "password", label: "password", width: "1000", sortable: true },
+    { prop: "username", label: "username", width: "1000", sortable: true },
+    // { prop: "password", label: "password", width: "1000", sortable: true },
     { prop: "created_at", label: "Created At", width: "200", sortable: true },
   ];
 
   ngOnInit(): void {
     this.getPassword();
+
+    // this.listener();
   }
-  createPassword(
-    event: SubmitEvent,
-    name: string,
-    url: string,
-    password: string,
-  ): void {
-    event.preventDefault();
-    invoke<void>("create_password", {
-      newPassword: {
-        name: name,
-        url: url,
-        password: password,
-      },
-    }).then((e) => {
-      console.log(e);
-      window.location.reload();
+  // listener() {
+  //   listen("reload", () => {
+  //     window.location.reload();
+  //   });
+  // }
+  async createPassword() {
+    console.log(window.location.origin + "/passwordCreate");
+    const webview = new WebviewWindow("createPassword", {
+      title: "Create Password",
+      // hiddenTitle: true,
+      minimizable: false,
+      resizable: false,
+      skipTaskbar: true,
+      center: true,
+      alwaysOnTop: true,
+      width: 400,
+      height: 400,
+      url: window.location.origin + "/passwordCreate",
     });
+
+    // invoke<void>("create_password", {
+    //   newPassword: {
+    //     name: name,
+    //     url: url,
+    //     username: username,
+    //     password: password,
+    //   },
+    // }).then((e) => {
+    //   console.log(e);
+    //   window.location.reload();
+    // });
   }
 
   getPassword(): void {

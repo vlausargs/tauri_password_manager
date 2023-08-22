@@ -10,6 +10,8 @@ pub struct Password {
     pub icon_url:  Option<String>,
     pub name: String,
     pub url: String,
+    pub username: String,
+    #[serde(skip_serializing)]
     pub password: String,
     pub created_at: NaiveDateTime
 }

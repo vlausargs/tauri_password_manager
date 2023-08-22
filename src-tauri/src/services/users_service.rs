@@ -1,21 +1,21 @@
 use crate::{db::establish_db_connection, models::user::User, schema::users::dsl};
 use diesel::prelude::*;
 
-pub fn init() {
-    let users = list_users();
+// pub fn init() {
+//     let users = list_users();
 
-    if users.len() > 0 {
-        return;
-    }
+//     if users.len() > 0 {
+//         return;
+//     }
 
-    let default_user = User {
-        id: String::from("chatgpt"),
-        name: Some("ChatGPT".to_string()),
-        created_at: chrono::Utc::now().naive_utc(),
-    };
+//     let default_user = User {
+//         id: String::from("chatgpt"),
+//         name: Some("ChatGPT".to_string()),
+//         created_at: chrono::Utc::now().naive_utc(),
+//     };
 
-    store_new_user(&default_user);
-}
+//     store_new_user(&default_user);
+// }
 
 pub fn list_users() -> Vec<User> {
     let connection = &mut establish_db_connection();

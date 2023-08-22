@@ -6,6 +6,7 @@ diesel::table! {
         icon_url -> Nullable<Text>,
         name -> Text,
         url -> Text,
+        username -> Text,
         password -> Text,
         created_at -> Timestamp,
     }

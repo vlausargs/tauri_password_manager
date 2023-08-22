@@ -9,6 +9,8 @@ import { PasswordListComponent } from "./page/password-list/password-list.compon
 import { BrowserModule } from "@angular/platform-browser";
 import { OauthComponent } from "./page/oauth/oauth.component";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { PasswordCreateComponent } from "./page/password-createe/password-create.component";
+import { BlankLayoutComponent } from "./layout/blank-layout/blank-layout.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/passwordList", pathMatch: "full" },
@@ -17,6 +19,7 @@ const routes: Routes = [
     component: AppLayoutComponent,
     children: [
       { path: "passwordList", component: PasswordListComponent },
+
       { path: "home", component: HomeComponent },
       { path: "oauth", component: OauthComponent },
     ],
@@ -26,6 +29,11 @@ const routes: Routes = [
     component: LoginLayoutComponent,
     children: [{ path: "login", component: LoginComponent }],
   },
+  {
+    path: "",
+    component: BlankLayoutComponent,
+    children: [{ path: "passwordCreate", component: PasswordCreateComponent }],
+  },
 ];
 
 @NgModule({
@@ -33,6 +41,7 @@ const routes: Routes = [
     HomeComponent,
     LoginComponent,
     PasswordListComponent,
+    PasswordCreateComponent,
     OauthComponent,
   ],
   imports: [
