@@ -34,19 +34,11 @@ export class PasswordListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getPassword();
-
-    // this.listener();
   }
-  // listener() {
-  //   listen("reload", () => {
-  //     window.location.reload();
-  //   });
-  // }
+
   async createPassword() {
-    console.log(window.location.origin + "/passwordCreate");
     const webview = new WebviewWindow("createPassword", {
       title: "Create Password",
-      // hiddenTitle: true,
       minimizable: false,
       resizable: false,
       skipTaskbar: true,
@@ -56,18 +48,6 @@ export class PasswordListComponent implements OnInit {
       height: 400,
       url: window.location.origin + "/passwordCreate",
     });
-
-    // invoke<void>("create_password", {
-    //   newPassword: {
-    //     name: name,
-    //     url: url,
-    //     username: username,
-    //     password: password,
-    //   },
-    // }).then((e) => {
-    //   console.log(e);
-    //   window.location.reload();
-    // });
   }
 
   getPassword(): void {

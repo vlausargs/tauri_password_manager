@@ -11,6 +11,7 @@ import { OauthComponent } from "./page/oauth/oauth.component";
 import { PasswordListComponent } from "./page/password-list/password-list.component";
 import { PasswordCreateComponent } from "./page/password-create/password-create.component";
 import { PasswordList2Component } from "./page/password-list2/password-list2.component";
+import { PasswordDetailComponent } from "./page/password-detail/password-detail.component";
 
 const routes: Routes = [
   { path: "", redirectTo: "/passwordList", pathMatch: "full" },
@@ -20,6 +21,7 @@ const routes: Routes = [
     children: [
       { path: "passwordList", component: PasswordListComponent },
       { path: "passwordList2", component: PasswordList2Component },
+
       { path: "oauth", component: OauthComponent },
     ],
   },
@@ -31,7 +33,10 @@ const routes: Routes = [
   {
     path: "",
     component: BlankLayoutComponent,
-    children: [{ path: "passwordCreate", component: PasswordCreateComponent }],
+    children: [
+      { path: "passwordCreate", component: PasswordCreateComponent },
+      { path: "passwordDetail/:id", component: PasswordDetailComponent },
+    ],
   },
 ];
 
@@ -41,6 +46,7 @@ const routes: Routes = [
     PasswordListComponent,
     PasswordList2Component,
     PasswordCreateComponent,
+    PasswordDetailComponent,
     OauthComponent,
   ],
   imports: [

@@ -27,6 +27,7 @@ async fn main() {
         create_password,
         list_passwords,
         get_password_decrypted,
+        get_password_detail,
         update_password,
         delete_password,
         generate_random_password,

@@ -1,4 +1,5 @@
 use crate::models::password_decrypted::PasswordDecrypted;
+use crate::models::password_detail::PasswordDetail;
 use crate::{db::establish_db_connection, models::password::Password, schema::passwords::dsl};
 use diesel::prelude::*;
 use magic_crypt::{new_magic_crypt, MagicCryptTrait};
@@ -87,6 +88,16 @@ pub fn get_password_decrypted(id: String,otp:String) -> Option<PasswordDecrypted
         None
     }
 
+}
+pub fn get_password_detail(id: String) -> Option<PasswordDetail> {
+    let connection = &mut establish_db_connection();
+
+   let res =  diesel::sql_query("SELECT id, icon_url, name, url, username, created_at from passwords where id = $1 LIMIT 1")
+    .bind::<diesel::sql_types::Text,_>(id)
+    .load::<PasswordDetail>(connection)
+    .ok();
+
+    res.unwrap().first().cloned()
 }
 
 pub fn store_new_password(password: &Password) {

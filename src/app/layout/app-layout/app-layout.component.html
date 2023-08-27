@@ -1,8 +1,8 @@
-<div class="flex w-screen h-screen bg-primary-2 font-color">
-  <div class="flex-none flex-col h-full bg-primary-3 w-[180px] font-medium">
+<div class="bg-primary-2 font-color flex h-screen w-screen">
+  <div class="bg-primary-3 h-full w-[180px] flex-none flex-col font-medium">
     <div class="flex flex-row p-2">Password Manager</div>
     <div
-      class="flex flex-row mt-24"
+      class="mt-24 flex flex-row"
       [routerLink]="['/passwordList']"
       routerLinkActive="is-active"
     >
@@ -25,7 +25,7 @@
       </div>
     </div>
   </div>
-  <div class="w-full h-full">
+  <div class="h-full w-full">
     <router-outlet></router-outlet>
   </div>
 </div>

@@ -28,6 +28,7 @@ export class PasswordCreateComponent implements OnInit {
     event: SubmitEvent,
     name: string,
     url: string,
+    iconUrl: string,
     username: string,
     password: string,
   ): void {
@@ -36,6 +37,7 @@ export class PasswordCreateComponent implements OnInit {
       newPassword: {
         name: name,
         url: url,
+        icon_url: iconUrl,
         username: username,
         password: password,
       },

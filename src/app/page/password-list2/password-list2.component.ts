@@ -77,6 +77,7 @@ export class PasswordList2Component implements OnInit {
       console.log(array);
       this.passwords = array.map((password: any) => ({
         ...password,
+        expanded: false,
         created_at: this._utilFunctionService.convertApiDate(
           password.created_at,
           "DD/MM/YYYY",
@@ -103,6 +104,24 @@ export class PasswordList2Component implements OnInit {
           });
         });
       }
+    });
+  }
+
+  changeExpanded(obj: any): void {
+    obj.expanded = !obj.expanded;
+  }
+
+  showDetail(id: string): void {
+    const webview = new WebviewWindow("passwordDetail", {
+      title: "Password Detail",
+      minimizable: false,
+      resizable: false,
+      skipTaskbar: true,
+      center: true,
+      alwaysOnTop: true,
+      width: 400,
+      height: 400,
+      url: window.location.origin + "/passwordDetail/" + id,
     });
   }
 
