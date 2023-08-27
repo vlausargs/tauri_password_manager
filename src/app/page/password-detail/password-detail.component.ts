@@ -27,4 +27,37 @@ export class PasswordDetailComponent implements OnInit {
       Swal.close();
     });
   }
+
+  async getPasswordDecrypted(id: string) {
+    const { value } = await Swal.fire({
+      title: "OTP",
+      input: "text",
+      inputLabel: "Enter OTP",
+      inputValue: "",
+      inputAttributes: {
+        autocomplete: "off",
+      },
+      showCancelButton: true,
+      inputValidator: (value: any): any => {
+        if (!value) {
+          return "You need to write something!";
+        }
+      },
+    });
+    invoke<void>("get_password_decrypted", { id: id, otp: value }).then(
+      (e: any) => {
+        console.log(e);
+        if (!e) {
+          Swal.fire({
+            title: "Error!",
+            text: "Wrong OTP!",
+            icon: "error",
+          });
+          return;
+        }
+        navigator.clipboard.writeText(e?.password);
+        Swal.fire("Success", "password copied to clipboard", "success");
+      },
+    );
+  }
 }
